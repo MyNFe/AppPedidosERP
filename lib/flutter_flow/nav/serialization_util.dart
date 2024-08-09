@@ -1,10 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:from_css_color/from_css_color.dart';
 
-import '/backend/sqlite/queries/sqlite_row.dart';
-import '/backend/sqlite/queries/read.dart';
+import '/backend/schema/structs/index.dart';
+
 import '../../flutter_flow/lat_lng.dart';
 import '../../flutter_flow/place.dart';
 import '../../flutter_flow/uploaded_file.dart';
@@ -72,8 +71,8 @@ String? serializeParam(
       case ParamType.JSON:
         data = json.encode(param);
 
-      case ParamType.SqliteRow:
-        return json.encode((param as SqliteRow).data);
+      case ParamType.DataStruct:
+        data = param is BaseStruct ? param.serialize() : null;
 
       default:
         data = null;
@@ -151,14 +150,15 @@ enum ParamType {
   FFUploadedFile,
   JSON,
 
-  SqliteRow,
+  DataStruct,
 }
 
 dynamic deserializeParam<T>(
   String? param,
   ParamType paramType,
-  bool isList,
-) {
+  bool isList, {
+  StructBuilder<T>? structBuilder,
+}) {
   try {
     if (param == null) {
       return null;
@@ -171,7 +171,12 @@ dynamic deserializeParam<T>(
       return paramValues
           .whereType<String>()
           .map((p) => p)
-          .map((p) => deserializeParam<T>(p, paramType, false))
+          .map((p) => deserializeParam<T>(
+                p,
+                paramType,
+                false,
+                structBuilder: structBuilder,
+              ))
           .where((p) => p != null)
           .map((p) => p! as T)
           .toList();
@@ -203,16 +208,9 @@ dynamic deserializeParam<T>(
       case ParamType.JSON:
         return json.decode(param);
 
-      case ParamType.SqliteRow:
-        final data = json.decode(param) as Map<String, dynamic>;
-        switch (T) {
-          case RetornaTokenRow:
-            return RetornaTokenRow(data);
-          case ListaEmpresasRow:
-            return ListaEmpresasRow(data);
-          default:
-            return null;
-        }
+      case ParamType.DataStruct:
+        final data = json.decode(param) as Map<String, dynamic>? ?? {};
+        return structBuilder != null ? structBuilder(data) : null;
 
       default:
         return null;

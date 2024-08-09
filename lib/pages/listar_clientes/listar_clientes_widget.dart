@@ -1,27 +1,33 @@
 import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'listar_empresas_model.dart';
-export 'listar_empresas_model.dart';
+import 'listar_clientes_model.dart';
+export 'listar_clientes_model.dart';
 
-class ListarEmpresasWidget extends StatefulWidget {
-  const ListarEmpresasWidget({super.key});
+class ListarClientesWidget extends StatefulWidget {
+  const ListarClientesWidget({
+    super.key,
+    required this.filtroEmpresa,
+  });
+
+  final String? filtroEmpresa;
 
   @override
-  State<ListarEmpresasWidget> createState() => _ListarEmpresasWidgetState();
+  State<ListarClientesWidget> createState() => _ListarClientesWidgetState();
 }
 
-class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
-  late ListarEmpresasModel _model;
+class _ListarClientesWidgetState extends State<ListarClientesWidget> {
+  late ListarClientesModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => ListarEmpresasModel());
+    _model = createModel(context, () => ListarClientesModel());
   }
 
   @override
@@ -44,7 +50,7 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
           backgroundColor: FlutterFlowTheme.of(context).primary,
           automaticallyImplyLeading: false,
           title: Text(
-            'Selecione uma empresa',
+            'Selecione um Cliente',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
                   fontFamily: 'Outfit',
                   color: Colors.white,
@@ -65,7 +71,13 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
               ),
               onPressed: () async {
                 context.pushNamed(
-                  'AdicionarEmpresa',
+                  'AdicionarCliente',
+                  queryParameters: {
+                    'filtroEmpresa': serializeParam(
+                      widget.filtroEmpresa,
+                      ParamType.String,
+                    ),
+                  }.withoutNulls,
                   extra: <String, dynamic>{
                     kTransitionInfoKey: const TransitionInfo(
                       hasTransition: true,
@@ -89,6 +101,7 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                 padding: const EdgeInsetsDirectional.fromSTEB(10.0, 15.0, 10.0, 0.0),
                 child: Container(
                   width: double.infinity,
+                  height: MediaQuery.sizeOf(context).height * 0.85,
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                   ),
@@ -97,16 +110,19 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                     children: [
                       Builder(
                         builder: (context) {
-                          final listEmpresa = FFAppState().asEmpresa.toList();
+                          final listClientes = FFAppState()
+                              .asClientes
+                              .where((e) => e.codEmp == widget.filtroEmpresa)
+                              .toList();
 
                           return ListView.builder(
                             padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             scrollDirection: Axis.vertical,
-                            itemCount: listEmpresa.length,
-                            itemBuilder: (context, listEmpresaIndex) {
-                              final listEmpresaItem =
-                                  listEmpresa[listEmpresaIndex];
+                            itemCount: listClientes.length,
+                            itemBuilder: (context, listClientesIndex) {
+                              final listClientesItem =
+                                  listClientes[listClientesIndex];
                               return Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     0.0, 0.0, 0.0, 10.0),
@@ -117,10 +133,14 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                   highlightColor: Colors.transparent,
                                   onTap: () async {
                                     context.pushNamed(
-                                      'ListarClientes',
+                                      'GerarPedido',
                                       queryParameters: {
                                         'filtroEmpresa': serializeParam(
-                                          listEmpresaItem.codigo,
+                                          listClientesItem.codEmp,
+                                          ParamType.String,
+                                        ),
+                                        'filtroCliente': serializeParam(
+                                          listClientesItem.codigo,
                                           ParamType.String,
                                         ),
                                       }.withoutNulls,
@@ -128,7 +148,7 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                   },
                                   child: Container(
                                     width: 100.0,
-                                    height: 100.0,
+                                    height: 125.0,
                                     decoration: BoxDecoration(
                                       color: const Color(0x3F6F61EF),
                                       borderRadius: BorderRadius.circular(20.0),
@@ -152,7 +172,7 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                                     .fromSTEB(
                                                         0.0, 10.0, 0.0, 0.0),
                                                 child: Text(
-                                                  listEmpresaItem.codigo,
+                                                  'Empresa: ${listClientesItem.codEmp}',
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyMedium
@@ -168,7 +188,7 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                                     .fromSTEB(
                                                         0.0, 10.0, 0.0, 0.0),
                                                 child: Text(
-                                                  listEmpresaItem.razao,
+                                                  listClientesItem.codigo,
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyMedium
@@ -184,7 +204,27 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                                     .fromSTEB(
                                                         0.0, 10.0, 0.0, 0.0),
                                                 child: Text(
-                                                  listEmpresaItem.cnpj,
+                                                  listClientesItem.nome
+                                                      .maybeHandleOverflow(
+                                                    maxChars: 35,
+                                                    replacement: '…',
+                                                  ),
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
+                                                      .bodyMedium
+                                                      .override(
+                                                        fontFamily:
+                                                            'Plus Jakarta Sans',
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsetsDirectional
+                                                    .fromSTEB(
+                                                        0.0, 10.0, 0.0, 0.0),
+                                                child: Text(
+                                                  listClientesItem.cnpj,
                                                   style: FlutterFlowTheme.of(
                                                           context)
                                                       .bodyMedium
@@ -209,8 +249,8 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                                             highlightColor: Colors.transparent,
                                             onTap: () async {
                                               FFAppState()
-                                                  .removeAtIndexFromAsEmpresa(
-                                                      listEmpresaIndex);
+                                                  .removeAtIndexFromAsClientes(
+                                                      listClientesIndex);
                                               setState(() {});
                                             },
                                             child: Icon(
@@ -230,6 +270,37 @@ class _ListarEmpresasWidgetState extends State<ListarEmpresasWidget> {
                             },
                           );
                         },
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 0.0),
+                        child: FFButtonWidget(
+                          onPressed: () async {
+                            context.pushNamed('ListarEmpresas');
+                          },
+                          text: 'Voltar',
+                          options: FFButtonOptions(
+                            height: 40.0,
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                                24.0, 0.0, 24.0, 0.0),
+                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
+                                0.0, 0.0, 0.0, 0.0),
+                            color: FlutterFlowTheme.of(context).primary,
+                            textStyle: FlutterFlowTheme.of(context)
+                                .titleSmall
+                                .override(
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  color: Colors.white,
+                                  letterSpacing: 0.0,
+                                ),
+                            elevation: 3.0,
+                            borderSide: const BorderSide(
+                              color: Colors.transparent,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
                       ),
                     ],
                   ),

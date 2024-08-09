@@ -1,8 +1,8 @@
-import '/backend/sqlite/sqlite_manager.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'welcome_model.dart';
 export 'welcome_model.dart';
 
@@ -33,10 +33,10 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
-      onTap: () => _model.unfocusNode.canRequestFocus
-          ? FocusScope.of(context).requestFocus(_model.unfocusNode)
-          : FocusScope.of(context).unfocus(),
+      onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         key: scaffoldKey,
         backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
@@ -85,13 +85,7 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                         padding: const EdgeInsets.all(10.0),
                         child: FFButtonWidget(
                           onPressed: () async {
-                            var shouldSetState = false;
-                            _model.tokenAPI =
-                                await SQLiteManager.instance.retornaToken();
-                            shouldSetState = true;
-                            if ((_model.tokenAPI != null &&
-                                    (_model.tokenAPI)!.isNotEmpty) ==
-                                true) {
+                            if (FFAppState().TokenAPI != '') {
                               context.pushNamed(
                                 'ListarEmpresas',
                                 extra: <String, dynamic>{
@@ -104,14 +98,12 @@ class _WelcomeWidgetState extends State<WelcomeWidget> {
                                 },
                               );
 
-                              if (shouldSetState) setState(() {});
                               return;
                             } else {
-                              if (shouldSetState) setState(() {});
+                              context.pushNamed('AdicionarEmpresa');
+
                               return;
                             }
-
-                            if (shouldSetState) setState(() {});
                           },
                           text: 'Entrar no APP',
                           options: FFButtonOptions(

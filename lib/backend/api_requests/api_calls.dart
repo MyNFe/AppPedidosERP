@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 
 import '/flutter_flow/flutter_flow_util.dart';
@@ -94,6 +95,32 @@ class ApiAddClientesCall {
         response,
         r'''$[:].COD_EMP''',
       ));
+}
+
+class ApiOrcamentosCall {
+  static Future<ApiCallResponse> call({
+    String? token = '',
+    String? empresa = '',
+    String? cliente = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'apiOrcamentos',
+      apiUrl: 'https://mynfe-api.expressflex.com.br/api/pedido-orcamento',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'token': token,
+        'empresa': empresa,
+        'cliente': cliente,
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
 }
 
 class ApiPagingParams {

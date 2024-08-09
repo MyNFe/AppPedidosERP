@@ -1,4 +1,4 @@
-# Teste API
+# PedidosERP - Teste
 
 A new Flutter project.
 

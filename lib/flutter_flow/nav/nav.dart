@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '/backend/schema/structs/index.dart';
 
 import '/index.dart';
 import '/flutter_flow/flutter_flow_util.dart';
@@ -38,14 +39,9 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, _) => const WelcomeWidget(),
         ),
         FFRoute(
-          name: 'ConfigEmpresa',
-          path: '/configEmpresa',
-          builder: (context, params) => const ConfigEmpresaWidget(),
-        ),
-        FFRoute(
-          name: 'AdicionarCliente',
-          path: '/adicionarCliente',
-          builder: (context, params) => const AdicionarClienteWidget(),
+          name: 'AdicionarEmpresa',
+          path: '/adicionarEmpresa',
+          builder: (context, params) => const AdicionarEmpresaWidget(),
         ),
         FFRoute(
           name: 'welcome',
@@ -56,6 +52,40 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           name: 'ListarEmpresas',
           path: '/listarEmpresas',
           builder: (context, params) => const ListarEmpresasWidget(),
+        ),
+        FFRoute(
+          name: 'AdicionarCliente',
+          path: '/adicionarCliente',
+          builder: (context, params) => AdicionarClienteWidget(
+            filtroEmpresa: params.getParam(
+              'filtroEmpresa',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'ListarClientes',
+          path: '/listarClientes',
+          builder: (context, params) => ListarClientesWidget(
+            filtroEmpresa: params.getParam(
+              'filtroEmpresa',
+              ParamType.String,
+            ),
+          ),
+        ),
+        FFRoute(
+          name: 'GerarPedido',
+          path: '/gerarPedido',
+          builder: (context, params) => GerarPedidoWidget(
+            filtroEmpresa: params.getParam(
+              'filtroEmpresa',
+              ParamType.String,
+            ),
+            filtroCliente: params.getParam(
+              'filtroCliente',
+              ParamType.String,
+            ),
+          ),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
@@ -127,6 +157,7 @@ class FFParameters {
     String paramName,
     ParamType type, {
     bool isList = false,
+    StructBuilder<T>? structBuilder,
   }) {
     if (futureParamValues.containsKey(paramName)) {
       return futureParamValues[paramName];
@@ -144,6 +175,7 @@ class FFParameters {
       param,
       type,
       isList,
+      structBuilder: structBuilder,
     );
   }
 }

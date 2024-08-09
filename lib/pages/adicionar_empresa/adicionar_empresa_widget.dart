@@ -9,40 +9,38 @@ import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
-import 'adicionar_cliente_model.dart';
-export 'adicionar_cliente_model.dart';
+import 'adicionar_empresa_model.dart';
+export 'adicionar_empresa_model.dart';
 
-class AdicionarClienteWidget extends StatefulWidget {
-  const AdicionarClienteWidget({
-    super.key,
-    required this.filtroEmpresa,
-  });
-
-  final String? filtroEmpresa;
+class AdicionarEmpresaWidget extends StatefulWidget {
+  const AdicionarEmpresaWidget({super.key});
 
   @override
-  State<AdicionarClienteWidget> createState() => _AdicionarClienteWidgetState();
+  State<AdicionarEmpresaWidget> createState() => _AdicionarEmpresaWidgetState();
 }
 
-class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
-  late AdicionarClienteModel _model;
+class _AdicionarEmpresaWidgetState extends State<AdicionarEmpresaWidget> {
+  late AdicionarEmpresaModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => AdicionarClienteModel());
+    _model = createModel(context, () => AdicionarEmpresaModel());
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      _model.addCliente = false;
+      _model.addEmpresa = false;
       setState(() {});
     });
 
-    _model.edtCNPJClienteTextController ??=
-        TextEditingController(text: '26.363.119/0003-84');
-    _model.edtCNPJClienteFocusNode ??= FocusNode();
+    _model.edtTokenTextController ??= TextEditingController(
+        text: '45|5Da0vKzrbxGwoIb3PiKMhQGTSUZGUsn2n0VUYSWcaafe8866');
+    _model.edtTokenFocusNode ??= FocusNode();
+
+    _model.edtCodEmpresaTextController ??= TextEditingController();
+    _model.edtCodEmpresaFocusNode ??= FocusNode();
   }
 
   @override
@@ -79,7 +77,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
             },
           ),
           title: Text(
-            'Adicionar cliente',
+            'Config empresa',
             style: FlutterFlowTheme.of(context).headlineMedium.override(
                   fontFamily: 'Outfit',
                   color: Colors.white,
@@ -100,27 +98,93 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
               children: [
                 Container(
                   width: double.infinity,
+                  height: 600.0,
                   decoration: BoxDecoration(
                     color: FlutterFlowTheme.of(context).secondaryBackground,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.max,
                     children: [
+                      if (FFAppState().TokenAPI == '')
+                        Padding(
+                          padding: const EdgeInsetsDirectional.fromSTEB(
+                              30.0, 20.0, 30.0, 0.0),
+                          child: TextFormField(
+                            controller: _model.edtTokenTextController,
+                            focusNode: _model.edtTokenFocusNode,
+                            autofocus: true,
+                            obscureText: false,
+                            decoration: InputDecoration(
+                              labelText: 'Informe o token',
+                              labelStyle: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Plus Jakarta Sans',
+                                    letterSpacing: 0.0,
+                                  ),
+                              hintStyle: FlutterFlowTheme.of(context)
+                                  .labelMedium
+                                  .override(
+                                    fontFamily: 'Outfit',
+                                    letterSpacing: 0.0,
+                                  ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).primary,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: FlutterFlowTheme.of(context).error,
+                                  width: 2.0,
+                                ),
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              contentPadding: const EdgeInsetsDirectional.fromSTEB(
+                                  10.0, 0.0, 0.0, 0.0),
+                            ),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Plus Jakarta Sans',
+                                  letterSpacing: 0.0,
+                                ),
+                            textAlign: TextAlign.start,
+                            validator: _model.edtTokenTextControllerValidator
+                                .asValidator(context),
+                          ),
+                        ),
                       Padding(
                         padding: const EdgeInsetsDirectional.fromSTEB(
                             30.0, 15.0, 30.0, 0.0),
                         child: TextFormField(
-                          controller: _model.edtCNPJClienteTextController,
-                          focusNode: _model.edtCNPJClienteFocusNode,
+                          controller: _model.edtCodEmpresaTextController,
+                          focusNode: _model.edtCodEmpresaFocusNode,
                           onChanged: (_) => EasyDebounce.debounce(
-                            '_model.edtCNPJClienteTextController',
+                            '_model.edtCodEmpresaTextController',
                             const Duration(milliseconds: 2000),
                             () => setState(() {}),
                           ),
                           autofocus: true,
                           obscureText: false,
                           decoration: InputDecoration(
-                            labelText: 'Informe o CNPJ do cliente',
+                            labelText: 'Informe o código da empresa',
                             labelStyle: FlutterFlowTheme.of(context)
                                 .bodyMedium
                                 .override(
@@ -163,11 +227,11 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                             ),
                             contentPadding: const EdgeInsetsDirectional.fromSTEB(
                                 10.0, 0.0, 0.0, 0.0),
-                            suffixIcon: _model.edtCNPJClienteTextController!
-                                    .text.isNotEmpty
+                            suffixIcon: _model.edtCodEmpresaTextController!.text
+                                    .isNotEmpty
                                 ? InkWell(
                                     onTap: () async {
-                                      _model.edtCNPJClienteTextController
+                                      _model.edtCodEmpresaTextController
                                           ?.clear();
                                       setState(() {});
                                     },
@@ -184,8 +248,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                     letterSpacing: 0.0,
                                   ),
                           textAlign: TextAlign.start,
-                          validator: _model
-                              .edtCNPJClienteTextControllerValidator
+                          validator: _model.edtCodEmpresaTextControllerValidator
                               .asValidator(context),
                         ),
                       ),
@@ -194,42 +257,23 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                         child: FFButtonWidget(
                           onPressed: () async {
                             var shouldSetState = false;
-                            _model.rApiCliente = await ApiAddClientesCall.call(
+                            FFAppState().TokenAPI =
+                                _model.edtTokenTextController.text;
+                            setState(() {});
+                            _model.rApiEmpresa = await ApiCadEmpresaCall.call(
+                              empresa: _model.edtCodEmpresaTextController.text,
                               token: FFAppState().TokenAPI,
-                              empresa: widget.filtroEmpresa,
-                              cnpj: _model.edtCNPJClienteTextController.text,
                             );
 
                             shouldSetState = true;
-                            _model.codCli = valueOrDefault<String>(
-                              ApiAddClientesCall.codigo(
-                                (_model.rApiCliente?.jsonBody ?? ''),
-                              ),
-                              'x',
-                            );
-                            setState(() {});
-                            if (_model.codCli != 'x') {
-                              _model.addCliente = true;
+                            if ((_model.rApiEmpresa?.succeeded ?? true) ==
+                                true) {
+                              _model.addEmpresa = true;
                               setState(() {});
                               if (shouldSetState) setState(() {});
                               return;
                             } else {
-                              await showDialog(
-                                context: context,
-                                builder: (alertDialogContext) {
-                                  return AlertDialog(
-                                    content: const Text('CNPJ não encontrado!'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.pop(alertDialogContext),
-                                        child: const Text('Ok'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                              _model.addCliente = false;
+                              _model.addEmpresa = false;
                               setState(() {});
                               if (shouldSetState) setState(() {});
                               return;
@@ -237,7 +281,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
 
                             if (shouldSetState) setState(() {});
                           },
-                          text: 'Encontrar cliente',
+                          text: 'Encontrar empresa',
                           options: FFButtonOptions(
                             width: 200.0,
                             height: 40.0,
@@ -262,7 +306,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                           ),
                         ),
                       ),
-                      if (_model.addCliente)
+                      if (_model.addEmpresa)
                         Container(
                           width: double.infinity,
                           decoration: BoxDecoration(
@@ -276,7 +320,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                 padding: const EdgeInsetsDirectional.fromSTEB(
                                     0.0, 20.0, 0.0, 0.0),
                                 child: Text(
-                                  'Código do cliente',
+                                  'Código da empresa',
                                   style: FlutterFlowTheme.of(context)
                                       .bodyMedium
                                       .override(
@@ -287,37 +331,8 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                               ),
                               Text(
                                 valueOrDefault<String>(
-                                  ApiAddClientesCall.codigo(
-                                    (_model.rApiCliente?.jsonBody ?? ''),
-                                  ),
-                                  '0',
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 20.0, 0.0, 0.0),
-                                child: Text(
-                                  'Nome do cliente',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Plus Jakarta Sans',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                              ),
-                              Text(
-                                valueOrDefault<String>(
-                                  ApiAddClientesCall.nome(
-                                    (_model.rApiCliente?.jsonBody ?? ''),
+                                  ApiCadEmpresaCall.codigo(
+                                    (_model.rApiEmpresa?.jsonBody ?? ''),
                                   ),
                                   '0',
                                 ),
@@ -345,37 +360,8 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                               ),
                               Text(
                                 valueOrDefault<String>(
-                                  ApiAddClientesCall.cnpj(
-                                    (_model.rApiCliente?.jsonBody ?? ''),
-                                  ),
-                                  '0',
-                                ),
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Plus Jakarta Sans',
-                                      fontSize: 20.0,
-                                      letterSpacing: 0.0,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsetsDirectional.fromSTEB(
-                                    0.0, 20.0, 0.0, 0.0),
-                                child: Text(
-                                  'Código da empresa',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                        fontFamily: 'Plus Jakarta Sans',
-                                        letterSpacing: 0.0,
-                                      ),
-                                ),
-                              ),
-                              Text(
-                                valueOrDefault<String>(
-                                  ApiAddClientesCall.codEmp(
-                                    (_model.rApiCliente?.jsonBody ?? ''),
+                                  ApiCadEmpresaCall.cnpj(
+                                    (_model.rApiEmpresa?.jsonBody ?? ''),
                                   ),
                                   '0',
                                 ),
@@ -403,8 +389,37 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                               ),
                               Text(
                                 valueOrDefault<String>(
-                                  ApiAddClientesCall.idgrpemp(
-                                    (_model.rApiCliente?.jsonBody ?? ''),
+                                  ApiCadEmpresaCall.idgrpemp(
+                                    (_model.rApiEmpresa?.jsonBody ?? ''),
+                                  ),
+                                  '0',
+                                ),
+                                style: FlutterFlowTheme.of(context)
+                                    .bodyMedium
+                                    .override(
+                                      fontFamily: 'Plus Jakarta Sans',
+                                      fontSize: 20.0,
+                                      letterSpacing: 0.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 20.0, 0.0, 0.0),
+                                child: Text(
+                                  'ID grupo empresa',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                        fontFamily: 'Plus Jakarta Sans',
+                                        letterSpacing: 0.0,
+                                      ),
+                                ),
+                              ),
+                              Text(
+                                valueOrDefault<String>(
+                                  ApiCadEmpresaCall.razao(
+                                    (_model.rApiEmpresa?.jsonBody ?? ''),
                                   ),
                                   '0',
                                 ),
@@ -421,29 +436,26 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                 padding: const EdgeInsets.all(10.0),
                                 child: FFButtonWidget(
                                   onPressed: () async {
-                                    if (functions.testaCodigoCliente(
-                                            FFAppState().asClientes.toList(),
-                                            ApiAddClientesCall.codigo(
-                                              (_model.rApiCliente?.jsonBody ??
+                                    if (functions.testaCodigoEmpresa(
+                                            FFAppState().asEmpresa.toList(),
+                                            ApiCadEmpresaCall.codigo(
+                                              (_model.rApiEmpresa?.jsonBody ??
                                                   ''),
                                             )!) ==
                                         false) {
                                       FFAppState()
-                                          .addToAsClientes(DtClientesStruct(
-                                        codigo: ApiAddClientesCall.codigo(
-                                          (_model.rApiCliente?.jsonBody ?? ''),
+                                          .addToAsEmpresa(DtEmpresaStruct(
+                                        codigo: ApiCadEmpresaCall.codigo(
+                                          (_model.rApiEmpresa?.jsonBody ?? ''),
                                         ),
-                                        nome: ApiAddClientesCall.nome(
-                                          (_model.rApiCliente?.jsonBody ?? ''),
+                                        cnpj: ApiCadEmpresaCall.cnpj(
+                                          (_model.rApiEmpresa?.jsonBody ?? ''),
                                         ),
-                                        cnpj: ApiAddClientesCall.cnpj(
-                                          (_model.rApiCliente?.jsonBody ?? ''),
+                                        idgrpemp: ApiCadEmpresaCall.idgrpemp(
+                                          (_model.rApiEmpresa?.jsonBody ?? ''),
                                         ),
-                                        idgrpemp: ApiAddClientesCall.idgrpemp(
-                                          (_model.rApiCliente?.jsonBody ?? ''),
-                                        ),
-                                        codEmp: ApiAddClientesCall.codEmp(
-                                          (_model.rApiCliente?.jsonBody ?? ''),
+                                        razao: ApiCadEmpresaCall.razao(
+                                          (_model.rApiEmpresa?.jsonBody ?? ''),
                                         ),
                                       ));
                                       FFAppState().update(() {});
@@ -452,7 +464,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                         builder: (alertDialogContext) {
                                           return AlertDialog(
                                             content: const Text(
-                                                'Cliente cadastrado no dispositivo'),
+                                                'Empresa cadastrada no dispositivo'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(
@@ -484,7 +496,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                         builder: (alertDialogContext) {
                                           return AlertDialog(
                                             content:
-                                                const Text('Cliente já cadastrado'),
+                                                const Text('Empresa já cadastrada'),
                                             actions: [
                                               TextButton(
                                                 onPressed: () => Navigator.pop(
@@ -498,7 +510,7 @@ class _AdicionarClienteWidgetState extends State<AdicionarClienteWidget> {
                                       return;
                                     }
                                   },
-                                  text: 'Adicionar cliente',
+                                  text: 'Adicionar empresa',
                                   options: FFButtonOptions(
                                     width: 200.0,
                                     height: 40.0,

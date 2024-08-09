@@ -4,21 +4,19 @@ import 'adicionar_cliente_widget.dart' show AdicionarClienteWidget;
 import 'package:flutter/material.dart';
 
 class AdicionarClienteModel extends FlutterFlowModel<AdicionarClienteWidget> {
+  ///  Local state fields for this page.
+
+  bool addCliente = true;
+
+  String codCli = 'x';
+
   ///  State fields for stateful widgets in this page.
 
-  final unfocusNode = FocusNode();
-  // State field(s) for edtToken widget.
-  FocusNode? edtTokenFocusNode;
-  TextEditingController? edtTokenTextController;
-  String? Function(BuildContext, String?)? edtTokenTextControllerValidator;
-  // State field(s) for edtCodEmpresa widget.
-  FocusNode? edtCodEmpresaFocusNode;
-  TextEditingController? edtCodEmpresaTextController;
-  String? Function(BuildContext, String?)? edtCodEmpresaTextControllerValidator;
-  // State field(s) for edtCNPJCli widget.
-  FocusNode? edtCNPJCliFocusNode;
-  TextEditingController? edtCNPJCliTextController;
-  String? Function(BuildContext, String?)? edtCNPJCliTextControllerValidator;
+  // State field(s) for edtCNPJCliente widget.
+  FocusNode? edtCNPJClienteFocusNode;
+  TextEditingController? edtCNPJClienteTextController;
+  String? Function(BuildContext, String?)?
+      edtCNPJClienteTextControllerValidator;
   // Stores action output result for [Backend Call - API (apiAddClientes)] action in btnAtualizaAPI widget.
   ApiCallResponse? rApiCliente;
 
@@ -27,14 +25,7 @@ class AdicionarClienteModel extends FlutterFlowModel<AdicionarClienteWidget> {
 
   @override
   void dispose() {
-    unfocusNode.dispose();
-    edtTokenFocusNode?.dispose();
-    edtTokenTextController?.dispose();
-
-    edtCodEmpresaFocusNode?.dispose();
-    edtCodEmpresaTextController?.dispose();
-
-    edtCNPJCliFocusNode?.dispose();
-    edtCNPJCliTextController?.dispose();
+    edtCNPJClienteFocusNode?.dispose();
+    edtCNPJClienteTextController?.dispose();
   }
 }
